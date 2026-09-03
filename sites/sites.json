@@ -7,18 +7,18 @@
     "name": "DevMap.дев",
     "path": "sites/DevMap.html"
   },
- {
+  {
     "name": "JohnDevInfo.дев",
     "path": "sites/JohnDev.html"
   },
- {
+  {
     "name": "DevSecret.дев",
     "path": "sites/DevSecret.html"
   },
   {
     "name": "DevWiki.дев",
     "path": "sites/DevWiki/index.html"
-  }
+  },
   {
     "name": "DevAI.дев",
     "path": "sites/DevAI.html"
