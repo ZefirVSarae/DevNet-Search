@@ -19,4 +19,8 @@
     "name": "DevWiki.дев",
     "path": "sites/DevWiki/index.html"
   }
+  {
+    "name": "DevAI.дев",
+    "path": "sites/DevAI.html"
+  }
 ]
