@@ -1,0 +1,374 @@
+[
+  {
+    "id": "home",
+    "title": "Заглавная",
+    "icon": "home",
+    "keywords": "главная дев роблокс"
+  },
+  {
+    "id": "loshyas",
+    "title": "Лосяш Тим",
+    "icon": "biotech",
+    "keywords": "команда ученые"
+  },
+  {
+    "id": "pers-jijhi",
+    "title": "Джихджи",
+    "icon": "smart_toy",
+    "keywords": "перс атакер воид"
+  },
+  {
+    "id": "pers-devesto",
+    "title": "Девесто",
+    "icon": "build",
+    "keywords": "перс f3x тулбокс"
+  },
+  {
+    "id": "pers-guest1818",
+    "title": "Гость 1818",
+    "icon": "person",
+    "keywords": "перс кошка демон"
+  },
+  {
+    "id": "pers-null",
+    "title": "Нулл",
+    "icon": "psychology",
+    "keywords": "перс балди крик"
+  },
+  {
+    "id": "pers-bsd",
+    "title": "Бсд Пассион",
+    "icon": "person",
+    "keywords": "создатель зоржа"
+  },
+  {
+    "id": "pers-karkarych",
+    "title": "К@рк@рыч",
+    "icon": "pets",
+    "keywords": "перс смешарик"
+  },
+  {
+    "id": "pers-blackfigure",
+    "title": "Черная фигура",
+    "icon": "shadow",
+    "keywords": "перс лост"
+  },
+  {
+    "id": "pers-sirenhead",
+    "title": "Сиреноголовый",
+    "icon": "headphones",
+    "keywords": "перс лост"
+  },
+  {
+    "id": "pers-purshur",
+    "title": "Пуршур",
+    "icon": "visibility_off",
+    "keywords": "перс лост"
+  },
+  {
+    "id": "pers-g181x",
+    "title": "G181x (Гавна пел)",
+    "icon": "swords",
+    "keywords": "перс лост"
+  },
+  {
+    "id": "pers-toiletman",
+    "title": "Туалет-мен",
+    "icon": "toilet",
+    "keywords": "прислужник"
+  },
+  {
+    "id": "pers-johndev",
+    "title": "Джон Дев",
+    "icon": "hacking",
+    "keywords": "хакер уничтожитель"
+  },
+  {
+    "id": "pers-astroblox",
+    "title": "Астроблокс",
+    "icon": "strategy",
+    "keywords": "прислужник шахматы"
+  },
+  {
+    "id": "pers-jason",
+    "title": "Джейсон",
+    "icon": "chainsaw",
+    "keywords": "прислужник бензопила"
+  },
+  {
+    "id": "pers-doombringer",
+    "title": "Думбрингер",
+    "icon": "hammer",
+    "keywords": "прислужник молот"
+  },
+  {
+    "id": "pers-number",
+    "title": "NUMBER283892",
+    "icon": "pin",
+    "keywords": "ошибка нпс"
+  },
+  {
+    "id": "pers-yandexalice",
+    "title": "Яндекс Алиса",
+    "icon": "robot_2",
+    "keywords": "ии перс"
+  },
+  {
+    "id": "pers-narrator",
+    "title": "Норатор",
+    "icon": "magic",
+    "keywords": "перс волшебная палочка"
+  },
+  {
+    "id": "pers-dealer",
+    "title": "Диалер",
+    "icon": "casino",
+    "keywords": "перс мини игра"
+  },
+  {
+    "id": "pers-spread",
+    "title": "Спреад",
+    "icon": "syringe",
+    "keywords": "перс зоржа"
+  },
+  {
+    "id": "pers-badware",
+    "title": "Бедвар",
+    "icon": "computer",
+    "keywords": "перс компьютер"
+  },
+  {
+    "id": "pers-baldi",
+    "title": "Балди",
+    "icon": "school",
+    "keywords": "перс учитель математика"
+  },
+  {
+    "id": "pers-doctorreflex",
+    "title": "Доктор Рефлекс",
+    "icon": "medical_services",
+    "keywords": "перс балди"
+  },
+  {
+    "id": "pers-devmini",
+    "title": "Девмини",
+    "icon": "speaker",
+    "keywords": "перс лагерь д"
+  },
+  {
+    "id": "pers-nosferatu",
+    "title": "Ноэасфератув",
+    "icon": "dark_mode",
+    "keywords": "перс летучая мышь"
+  },
+  {
+    "id": "pers-recall",
+    "title": "Рекалл",
+    "icon": "edit",
+    "keywords": "перс лагерь д"
+  },
+  {
+    "id": "pers-aidjar",
+    "title": "Айджар бай зе Дор",
+    "icon": "door_back",
+    "keywords": "перс лагерь д"
+  },
+  {
+    "id": "pers-jim",
+    "title": "Джим",
+    "icon": "flashlight",
+    "keywords": "перс лост"
+  },
+  {
+    "id": "pers-devires",
+    "title": "Девайрис",
+    "icon": "restaurant",
+    "keywords": "перс шашлык"
+  },
+  {
+    "id": "pers-butter",
+    "title": "Бутер (глупы бургер)",
+    "icon": "fastfood",
+    "keywords": "перс лост"
+  },
+  {
+    "id": "pers-crazyblocks",
+    "title": "Крейзи Блокс",
+    "icon": "block",
+    "keywords": "прислужник лост"
+  },
+  {
+    "id": "pers-scarewoker",
+    "title": "Скеривокер",
+    "icon": "yard",
+    "keywords": "перс лост"
+  },
+  {
+    "id": "pers-igze",
+    "title": "Игзе",
+    "icon": "speed",
+    "keywords": "прислужник лост"
+  },
+  {
+    "id": "pers-spirit",
+    "title": "Спирит",
+    "icon": "ghost",
+    "keywords": "перс лост"
+  },
+  {
+    "id": "pers-atmet",
+    "title": "Атемтет",
+    "icon": "medication",
+    "keywords": "перс лост"
+  },
+  {
+    "id": "pers-grigory",
+    "title": "Григорий",
+    "icon": "yard",
+    "keywords": "перс лост"
+  },
+  {
+    "id": "pers-bazooka",
+    "title": "Базука",
+    "icon": "rocket_launch",
+    "keywords": "перс лост"
+  },
+  {
+    "id": "pers-mafiosa",
+    "title": "Мафиоса",
+    "icon": "paid",
+    "keywords": "перс лост"
+  },
+  {
+    "id": "pers-grandma",
+    "title": "Бабки-персы",
+    "icon": "elderly",
+    "keywords": "перс почта"
+  },
+  {
+    "id": "pers-pizdevy",
+    "title": "Голуби пиздевы",
+    "icon": "crow",
+    "keywords": "перс птицы"
+  },
+  {
+    "id": "pers-fish",
+    "title": "Трагедия (рыба)",
+    "icon": "cruelty_free",
+    "keywords": "перс рыба"
+  },
+  {
+    "id": "pers-craven",
+    "title": "Кравен",
+    "icon": "raven",
+    "keywords": "перс лост ворона"
+  },
+  {
+    "id": "pers-johngrace",
+    "title": "Джон Грейс",
+    "icon": "run_circle",
+    "keywords": "участник лосяш тим"
+  },
+  {
+    "id": "pers-deivy",
+    "title": "Дэвий",
+    "icon": "flashlight",
+    "keywords": "участник лосяш тим лост"
+  },
+  {
+    "id": "pers-intinator",
+    "title": "Интинатор",
+    "icon": "swords",
+    "keywords": "участник лосяш тим лост"
+  },
+  {
+    "id": "pers-adam",
+    "title": "Адам",
+    "icon": "whatshot",
+    "keywords": "прислужник отец джейсона"
+  },
+  {
+    "id": "location-ambarnineteen",
+    "title": "Амбар 19",
+    "icon": "warehouse",
+    "keywords": "кладбище лост персов"
+  },
+  {
+    "id": "location-doors",
+    "title": "Двери Дева",
+    "icon": "door_front",
+    "keywords": "двери синяя красная"
+  },
+  {
+    "id": "item-zorja",
+    "title": "Зоржа",
+    "icon": "vaccines",
+    "keywords": "вещество шприц"
+  },
+  {
+    "id": "item-generator",
+    "title": "Генератор Дева",
+    "icon": "bolt",
+    "keywords": "статус пинг"
+  },
+  {
+    "id": "item-jempop",
+    "title": "Джемпоп",
+    "icon": "science",
+    "keywords": "зелье контрабанда"
+  },
+  {
+    "id": "location-glaggland",
+    "title": "Глаггланд",
+    "icon": "island",
+    "keywords": "страна гигглеры энфосо"
+  },
+  {
+    "id": "race-giggler",
+    "title": "Гигглеры",
+    "icon": "people",
+    "keywords": "раса гигглер"
+  },
+  {
+    "id": "race-enphoso",
+    "title": "Энфосо",
+    "icon": "people",
+    "keywords": "раса энфосо"
+  },
+  {
+    "id": "pers-mike",
+    "title": "Майк",
+    "icon": "wallpaper",
+    "keywords": "перс стенка"
+  },
+  {
+    "id": "pers-ff",
+    "title": "ФФ (охотник)",
+    "icon": "gun",
+    "keywords": "перс охотник дробовик"
+  },
+  {
+    "id": "pers-pokoritel",
+    "title": "Покоритель движух",
+    "icon": "rocket_launch",
+    "keywords": "перс движуха"
+  },
+  {
+    "id": "pers-masterpizdevitya",
+    "title": "Мастер ПиздеВитя",
+    "icon": "handyman",
+    "keywords": "перс мотор зоржа"
+  },
+  {
+    "id": "pers-risio",
+    "title": "Рисио",
+    "icon": "swords",
+    "keywords": "перс фазы оружие"
+  },
+  {
+    "id": "pers-jrnzhir",
+    "title": "Джрн жир",
+    "icon": "body_fat",
+    "keywords": "перс толстый джон"
+  }
+]

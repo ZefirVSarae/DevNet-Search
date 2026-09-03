@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DevMap - Точные карты</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <style>
+    body {
+      user-select: none;
+      -webkit-user-select: none;
+      background-color: #000;
+      color: #f4f4f5;
+      font-family: system-ui, -apple-system, sans-serif;
+      touch-action: none;
+    }
+    #map-container {
+      cursor: grab;
+    }
+    #map-container:active {
+      cursor: grabbing;
+    }
+    #map-world {
+      will-change: transform;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #3f3f46;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col antialiased bg-black text-zinc-100">
+
+  <main class="flex-1 relative overflow-hidden bg-black" id="viewport">
+    <div id="map-container" class="absolute inset-0 w-full h-full">
+      <div id="map-world" class="absolute left-1/2 top-1/2 w-0 h-0 origin-center">
+        <div id="main-zone" class="absolute -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-zinc-900 border border-zinc-800 rounded-3xl"></div>
+        <div id="objects-layer" class="absolute inset-0"></div>
+      </div>
+    </div>
+
+    <div class="absolute bottom-6 right-6 flex flex-col gap-1.5 bg-zinc-900 border border-zinc-800 p-1.5 rounded-2xl z-20">
+      <button onclick="zoomAtCenter(1.25)" class="p-2.5 text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-xl transition-colors">
+        <span class="material-symbols-outlined text-xl">add</span>
+      </button>
+
+      <button onclick="resetZoom()" class="p-2.5 text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-xl transition-colors text-xs font-bold">
+        100%
+      </button>
+
+      <button onclick="zoomAtCenter(0.8)" class="p-2.5 text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-xl transition-colors">
+        <span class="material-symbols-outlined text-xl">remove</span>
+      </button>
+    </div>
+
+    <div id="info-drawer" class="fixed bottom-0 left-0 right-0 sm:left-6 sm:bottom-6 sm:right-auto sm:w-96 bg-zinc-900 border border-zinc-800 rounded-t-3xl sm:rounded-3xl p-5 z-30 transform translate-y-full sm:translate-y-10 sm:opacity-0 transition-all duration-300 pointer-events-none max-h-[80vh] flex flex-col">
+      <div class="flex items-start justify-between pb-3 border-b border-zinc-800 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <span id="drawer-icon" class="material-symbols-outlined text-2xl">location_on</span>
+          <div>
+            <h2 id="drawer-title" class="text-base font-semibold text-white">Название</h2>
+            <p id="drawer-subtitle" class="text-xs text-zinc-400">Метка на карте</p>
+          </div>
+        </div>
+        <button onclick="closeDrawer()" class="p-1 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <div id="drawer-content" class="py-4 space-y-3 overflow-y-auto custom-scroll flex-1 text-xs text-zinc-300 leading-relaxed">
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const wikiData = {
+      "obj_1788425222098": {
+        title: "Многоэтажная квартира из СПВК",
+        type: "Локация / Постройка",
+        color: "#ef4444",
+        details: [
+          { label: "Описание", value: "Многоэтажная квартира из СПВК, где произошло убийство голубей. Возле этой многоэтажки также упала стена от взрыва бомбы Джон Дева, из-за чего обрушились деревья и база Лосяш тима." },
+          { label: "Событие", value: "Убийство голубей (Голуби Пиздевы)" },
+          { label: "Статус", value: "Повреждена в результате атаки Джон Дева" }
+        ]
+      },
+      "obj_1788425256770": {
+        title: "Лосяш тим",
+        type: "Команда / Лагерь",
+        color: "#f59e0b",
+        details: [
+          { label: "Состав", value: "Лосяш, Лисичка, Татарстан, Пурпулезка, Нарвалз, Шарлатан, Дэвий, Интинатор" },
+          { label: "Цель", value: "Уничтожить дев, найти артефакты/кристаллы и освободить всех" },
+          { label: "Статус", value: "Расформирован (успешно выполнили миссию и разошлись по вселенным)" }
+        ]
+      },
+      "obj_1788425277115": {
+        title: "Вышка",
+        type: "Объект / Связь",
+        color: "#f97316",
+        details: [
+          { label: "Назначение", value: "Вышка связи для взаимодействия с реальным миром и DevNet" },
+          { label: "История", value: "Чинилась Лосяшем с декабря по январь. Часто отключалась для защиты от агра персов" },
+          { label: "Статус", value: "Работает" }
+        ]
+      },
+      "obj_1788425293610": {
+        title: "Лагерь БСД",
+        type: "Лагерь персов",
+        color: "#06b6d4",
+        details: [
+          { label: "Лидер", value: "БСД Пансион" },
+          { label: "Участники", value: "Черная тень, К@рк@рыч, Джихджи, Гость 1818, Нулл, Девесто, Балди и др." },
+          { label: "Статус", value: "Активен" }
+        ]
+      },
+      "obj_1788425380778": {
+        title: "Почта",
+        type: "Локация",
+        color: "#3b82f6",
+        details: [
+          { label: "Описание", value: "Здание на отшибе карты, где собираются бабки-персы и получают письма с новостями дева" },
+          { label: "Особенности", value: "Бабки умеют отрывать себе части тела и молча собирают корреспонденцию" }
+        ]
+      },
+      "obj_1788425400120": {
+        title: "Развалины лагеря Д",
+        type: "Бывший лагерь",
+        color: "#ef4444",
+        details: [
+          { label: "Бывшие участники", value: "Айджар бай зе Дор, Рекалл, Джим, Ноэасфератув, Девмини" },
+          { label: "История", value: "Лагерь воевал с лагерем БСД. Был уничтожен, а его участники стали Лост персами" },
+          { label: "Статус", value: "Уничтожен" }
+        ]
+      },
+      "obj_1788425418473": {
+        title: "Река",
+        type: "Гидрография",
+        color: "#06b6d4",
+        details: [
+          { label: "Описание", value: "Высохший водоем дева" },
+          { label: "Обитатели", value: "Раньше там жила Рыба Пожиратель (Трагедия), пока реку не высушили" }
+        ]
+      },
+      "obj_1788425435949": {
+        title: "Гараж Пассиона",
+        type: "Локация",
+        color: "#06b6d4",
+        details: [
+          { label: "Владелец", value: "БСД Пассион" },
+          { label: "Описание", value: "Штаб-квартира и личное укрытие создателя дева" }
+        ]
+      },
+      "obj_1788425447962": {
+        title: "Джон дев",
+        type: "Хакер / Прислужник",
+        color: "#a855f7",
+        details: [
+          { label: "Класс", value: "УНИЧТОЖИТЕЛЬ" },
+          { label: "Шанс встретить", value: "40%" },
+          { label: "Шанс выжить", value: "НЕВОЗМОЖНО" },
+          { label: "Способности", value: "Доступ ко всему интернету, взлом, тепается в реальную жизнь, команды, рерол баффов" },
+          { label: "Лор", value: "Ошибка скрипта двери/зоржи Пассиона. Сбежал из дева, построил дирижабль и остров. Мешает деву и хочет его уничтожить" }
+        ]
+      }
+    };
+
+    const state = {
+      scale: 1,
+      panX: 0,
+      panY: 0,
+      isPanning: false,
+      startX: 0,
+      startY: 0,
+      initialTouchDistance: 0,
+      initialScale: 1,
+      selectedId: null,
+      transformPending: false,
+      objects: [
+        { "id": "obj_1788425222098", "type": "marker", "x": 254, "y": -227, "color": "#ef4444", "title": "Многоэтажная квартира из СПВК" },
+        { "id": "obj_1788425256770", "type": "marker", "x": 134, "y": -241, "color": "#f59e0b", "title": "Лосяш тим" },
+        { "id": "obj_1788425277115", "type": "marker", "x": -150, "y": -251, "color": "#f97316", "title": "Вышка" },
+        { "id": "obj_1788425293610", "type": "marker", "x": 132, "y": -124, "color": "#06b6d4", "title": "Лагерь БСД" },
+        { "id": "obj_1788425380778", "type": "marker", "x": -187, "y": 240, "color": "#3b82f6", "title": "Почта" },
+        { "id": "obj_1788425400120", "type": "marker", "x": -241, "y": 276, "color": "#ef4444", "title": "Развалины лагеря Д" },
+        { "id": "obj_1788425418473", "type": "marker", "x": -55, "y": -193, "color": "#06b6d4", "title": "Река" },
+        { "id": "obj_1788425435949", "type": "marker", "x": -13, "y": -34, "color": "#06b6d4", "title": "Гараж Пассиона" },
+        { "id": "obj_1788425447962", "type": "marker", "x": 297, "y": -160, "color": "#a855f7", "title": "Джон дев" }
+      ]
+    };
+
+    const viewport = document.getElementById('viewport');
+    const container = document.getElementById('map-container');
+    const world = document.getElementById('map-world');
+    const objectsLayer = document.getElementById('objects-layer');
+
+    function updateTransform() {
+      if (!state.transformPending) {
+        state.transformPending = true;
+        requestAnimationFrame(() => {
+          world.style.transform = `translate3d(${state.panX}px, ${state.panY}px, 0px) scale(${state.scale})`;
+          state.transformPending = false;
+        });
+      }
+    }
+
+    container.addEventListener('mousedown', (e) => {
+      if (e.target.closest('#info-drawer')) return;
+      state.isPanning = true;
+      state.startX = e.clientX - state.panX;
+      state.startY = e.clientY - state.panY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!state.isPanning) return;
+      state.panX = e.clientX - state.startX;
+      state.panY = e.clientY - state.startY;
+      updateTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      state.isPanning = false;
+    });
+
+    function getTouchDistance(touches) {
+      const dx = touches[0].clientX - touches[1].clientX;
+      const dy = touches[0].clientY - touches[1].clientY;
+      return Math.hypot(dx, dy);
+    }
+
+    function getTouchCenter(touches) {
+      return {
+        x: (touches[0].clientX + touches[1].clientX) / 2,
+        y: (touches[0].clientY + touches[1].clientY) / 2
+      };
+    }
+
+    container.addEventListener('touchstart', (e) => {
+      if (e.target.closest('#info-drawer')) return;
+      if (e.touches.length === 1) {
+        state.isPanning = true;
+        state.startX = e.touches[0].clientX - state.panX;
+        state.startY = e.touches[0].clientY - state.panY;
+      } else if (e.touches.length === 2) {
+        state.isPanning = false;
+        state.initialTouchDistance = getTouchDistance(e.touches);
+        state.initialScale = state.scale;
+      }
+    }, { passive: false });
+
+    container.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1 && state.isPanning) {
+        state.panX = e.touches[0].clientX - state.startX;
+        state.panY = e.touches[0].clientY - state.startY;
+        updateTransform();
+      } else if (e.touches.length === 2) {
+        e.preventDefault();
+        const currentDistance = getTouchDistance(e.touches);
+        if (state.initialTouchDistance > 0) {
+          const zoomRatio = currentDistance / state.initialTouchDistance;
+          const targetScale = Math.min(Math.max(0.05, state.initialScale * zoomRatio), 10);
+
+          const rect = viewport.getBoundingClientRect();
+          const center = getTouchCenter(e.touches);
+          const mouseX = center.x - rect.left - rect.width / 2;
+          const mouseY = center.y - rect.top - rect.height / 2;
+
+          state.panX = mouseX - (mouseX - state.panX) * (targetScale / state.scale);
+          state.panY = mouseY - (mouseY - state.panY) * (targetScale / state.scale);
+          state.scale = targetScale;
+
+          updateTransform();
+        }
+      }
+    }, { passive: false });
+
+    container.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) state.initialTouchDistance = 0;
+      if (e.touches.length === 0) state.isPanning = false;
+    });
+
+    viewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
+      const targetScale = Math.min(Math.max(0.05, state.scale * zoomFactor), 10);
+      if (targetScale === state.scale) return;
+
+      const rect = viewport.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left - rect.width / 2;
+      const mouseY = e.clientY - rect.top - rect.height / 2;
+
+      state.panX = mouseX - (mouseX - state.panX) * (targetScale / state.scale);
+      state.panY = mouseY - (mouseY - state.panY) * (targetScale / state.scale);
+      state.scale = targetScale;
+
+      updateTransform();
+    }, { passive: false });
+
+    function zoomAtCenter(factor) {
+      const targetScale = Math.min(Math.max(0.05, state.scale * factor), 10);
+      state.scale = targetScale;
+      updateTransform();
+    }
+
+    function resetZoom() {
+      state.scale = 1;
+      state.panX = 0;
+      state.panY = 0;
+      updateTransform();
+    }
+
+    function renderObjects() {
+      objectsLayer.innerHTML = '';
+      state.objects.forEach(obj => {
+        const el = document.createElement('div');
+        el.className = 'object-element absolute pointer-events-auto cursor-pointer transition-transform active:scale-95';
+        el.style.left = `${obj.x}px`;
+        el.style.top = `${obj.y}px`;
+        el.style.transform = 'translate3d(-50%, -100%, 0px)';
+
+        const isSelected = state.selectedId === obj.id;
+
+        el.innerHTML = `
+          <div class="flex flex-col items-center group">
+            <div class="px-2.5 py-1 rounded-xl bg-zinc-900 border ${isSelected ? 'border-white ring-2 ring-white/20' : 'border-zinc-700'} text-xs font-medium text-white whitespace-nowrap mb-1">
+              ${obj.title}
+            </div>
+            <span class="material-symbols-outlined text-3xl transition-transform group-hover:scale-110" style="color: ${obj.color}">location_on</span>
+          </div>
+        `;
+
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showInfo(obj.id);
+        });
+
+        objectsLayer.appendChild(el);
+      });
+    }
+
+    function showInfo(id) {
+      state.selectedId = id;
+      renderObjects();
+
+      const data = wikiData[id];
+      const drawer = document.getElementById('info-drawer');
+      const title = document.getElementById('drawer-title');
+      const subtitle = document.getElementById('drawer-subtitle');
+      const icon = document.getElementById('drawer-icon');
+      const content = document.getElementById('drawer-content');
+
+      if (!data) return;
+
+      title.innerText = data.title;
+      subtitle.innerText = data.type;
+      icon.style.color = data.color;
+
+      content.innerHTML = data.details.map(item => `
+        <div class="bg-zinc-800/60 border border-zinc-800 rounded-2xl p-3">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold mb-1">${item.label}</div>
+          <div class="text-xs text-zinc-200">${item.value}</div>
+        </div>
+      `).join('');
+
+      drawer.classList.remove('translate-y-full', 'sm:translate-y-10', 'sm:opacity-0', 'pointer-events-none');
+      drawer.classList.add('translate-y-0', 'sm:translate-y-0', 'sm:opacity-100', 'pointer-events-auto');
+    }
+
+    function closeDrawer() {
+      state.selectedId = null;
+      renderObjects();
+      const drawer = document.getElementById('info-drawer');
+      drawer.classList.add('translate-y-full', 'sm:translate-y-10', 'sm:opacity-0', 'pointer-events-none');
+      drawer.classList.remove('translate-y-0', 'sm:translate-y-0', 'sm:opacity-100', 'pointer-events-auto');
+    }
+
+    container.addEventListener('click', (e) => {
+      if (!e.target.closest('.object-element') && !e.target.closest('#info-drawer')) {
+        closeDrawer();
+      }
+    });
+
+    renderObjects();
+    updateTransform();
+  </script>
+</body>
+</html>

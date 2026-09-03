@@ -1,0 +1,22 @@
+[
+  {
+    "name": "DevNetSpeed.дев",
+    "path": "sites/DevNetSpeed.html"
+  },
+  {
+    "name": "DevMap.дев",
+    "path": "sites/DevMap.html"
+  },
+ {
+    "name": "JohnDevInfo.дев",
+    "path": "sites/JohnDev.html"
+  },
+ {
+    "name": "DevSecret.дев",
+    "path": "sites/DevSecret.html"
+  },
+  {
+    "name": "DevWiki.дев",
+    "path": "sites/DevWiki/index.html"
+  }
+]

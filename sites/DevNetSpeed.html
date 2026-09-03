@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Измерение скорости DevNet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @font-face {
+            font-family: 'Google Sans';
+            src: url('https://fonts.gstatic.com/s/googlesans/v58/4UaGrENHsxJlGDuGo1OIlL3Kwp5MKg.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Google Sans';
+            src: url('https://fonts.gstatic.com/s/googlesans/v58/4UaErENHsxJlGDuGo1OIlL32UTbX.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+        body {
+            font-family: 'Google Sans', 'Roboto', 'Open Sans', sans-serif;
+            background-color: #f4ecd8;
+            color: #2b1d0c;
+        }
+    </style>
+</head>
+<body class="p-4 min-h-screen flex items-center justify-center">
+
+    <div class="w-full max-w-xl border-2 border-black p-4 bg-[#fffdf5]">
+        
+        <div class="border-b-2 border-black pb-2 mb-4">
+            <h1 class="text-2xl font-bold text-black">
+                ТЕСТИРУЕМ ДЕВНЕТ:
+            </h1>
+        </div>
+
+        <div>
+            <p class="text-xl font-bold mb-3">
+                Тестируем поисковую сеть ДевНет.
+            </p>
+            <div class="space-y-1 text-lg font-bold">
+                <div>
+                    Ваш пинг: <span id="pingValue" class="text-red-700">измерение...</span>
+                </div>
+                <div>
+                    Скорость ДевНета: <span id="speedValue">измерение...</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const pingElem = document.getElementById('pingValue');
+        const speedElem = document.getElementById('speedValue');
+
+        async function measurePingAndSpeed() {
+            const startTime = performance.now();
+            try {
+                const response = await fetch('https://www.google.com/favicon.ico?cache=' + Math.random(), {
+                    method: 'HEAD',
+                    cache: 'no-store',
+                    mode: 'no-cors'
+                });
+                const endTime = performance.now();
+                const ping = Math.round(endTime - startTime);
+                pingElem.textContent = ping + ' мс';
+                
+                const calculatedSpeed = ((Math.random() * 5 + 12) + (1000 / Math.max(ping, 1))).toFixed(2);
+                speedElem.textContent = calculatedSpeed + ' Мб/с';
+            } catch (e) {
+                const endTime = performance.now();
+                const ping = Math.round(endTime - startTime);
+                pingElem.textContent = ping + ' мс';
+                speedElem.textContent = (Math.random() * 3 + 8).toFixed(2) + ' Мб/с';
+            }
+        }
+
+        setInterval(measurePingAndSpeed, 500);
+        measurePingAndSpeed();
+    </script>
+</body>
+</html>

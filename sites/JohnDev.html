@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Все про джона</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@material/web@latest/dist/material-components-web.min.css">
+    <script type="importmap">
+      {
+        "imports": {
+          "@material/web/": "https://cdn.jsdelivr.net/npm/@material/web@latest/"
+        }
+      }
+    </script>
+    <script type="module">
+      import '@material/web/all.js';
+    </script>
+    <style>
+        :root {
+            color-scheme: dark;
+            --md-sys-color-background: #121316;
+            --md-sys-color-surface: #1a1c20;
+            --md-sys-color-surface-container: #23262b;
+            --md-sys-color-on-surface: #e2e2e6;
+            --md-sys-color-on-surface-variant: #c4c6d0;
+            --md-sys-color-primary: #d0bcff;
+            --md-sys-color-on-primary: #381e72;
+            --md-sys-color-primary-container: #4f378b;
+            --md-sys-color-on-primary-container: #eaddff;
+            --md-sys-color-outline: #8e9099;
+            --md-sys-color-error: #f2b8b5;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-surface);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--md-sys-color-surface);
+            padding: 24px 16px;
+            text-align: center;
+            border-bottom: 1px solid var(--md-sys-color-surface-container);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--md-sys-color-primary);
+        }
+
+        .subtitle {
+            margin-top: 8px;
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 14px;
+        }
+
+        main {
+            flex: 1;
+            padding: 16px;
+            max-width: 800px;
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card {
+            background-color: var(--md-sys-color-surface);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--md-sys-color-surface-container);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--md-sys-color-primary-container);
+            margin-bottom: 12px;
+        }
+
+        .card-title span {
+            color: var(--md-sys-color-primary);
+        }
+
+        p {
+            line-height: 1.6;
+            margin: 0 0 12px 0;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .warning {
+            border-left: 4px solid var(--md-sys-color-error);
+            background-color: rgba(242, 184, 181, 0.05);
+        }
+
+        .badge-container {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .badge {
+            background-color: var(--md-sys-color-surface-container);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--md-sys-color-on-surface);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--md-sys-color-outline);
+            font-size: 12px;
+            background-color: var(--md-sys-color-surface);
+            border-top: 1px solid var(--md-sys-color-surface-container);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Дотнет Архив Лосяша</h1>
+        <div class="subtitle">Секретная база данных по угрозе «Джон Дев»</div>
+    </header>
+
+    <main>
+        <div class="card warning">
+            <div class="card-title">
+                <span class="material-symbols-outlined">warning</span>
+                <span>Внимани</span>
+            </div>
+            <p>Этот сайт был сделан не для джона. Пожалуйста не рассказывайте это джону чтоб он не сделал DDOS.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <span class="material-symbols-outlined">person_search</span>
+                <span>Кто такой Джон Дев?</span>
+            </div>
+            <p>Джон Дев — наш главный враг, хакер и разрушитель. Он не обычный перс. Появился из-за ошибки в скриптах Пасиона: когда его пытались превратить в перса, зоржа сработала всего на 50%, из-за чего он сохранил разум, стал красным и сбежал.</p>
+            <p>Он носит синий топ-хэт на удачу, летает на дирижабле над ДевБлоксией и держит базу на отдельном острове. Его главные прислужники на сегодня — Астроблокс и Джейсон.</p>
+            <div class="badge-container">
+                <div class="badge"><span class="material-symbols-outlined" style="font-size: 16px;">bolt</span>Класс: Уничтожитель</div>
+                <div class="badge"><span class="material-symbols-outlined" style="font-size: 16px;">pets</span>Друг: Джейсон</div>
+                <div class="badge"><span class="material-symbols-outlined" style="font-size: 16px;">schedule</span>Одержимость: Число 18</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <span class="material-symbols-outlined">terminal</span>
+                <span>Хронология взломов и атак</span>
+            </div>
+            <ul>
+                <li><strong>18 марта 1818 года:</strong> Первая попытка Джона взломать амбар 18 (истоки ДевБлоксии), которая провалилась. Из-за этого он люто ненавидит число 18.</li>
+                <li><strong>18 марта 2017 года:</strong> Эпичный провал со взломом Роблокса, после которого вся ДевБлоксия начала над ним смеяться.</li>
+                <li><strong>Декабрь 2025 года:</strong> Угрозы полного удаления дева и отключение защитных дверей.</li>
+                <li><strong>21 июля 2026 года:</strong> Попытка Джона обрушить Google в отместку за рейд на его базу (закончилась неудачей, Гугл выстоял).</li>
+                <li><strong>6 августа 2026 года:</strong> Масштабный пранк Джона — полное обрушение Рунета (Ozon, Wildberries, Яндексы, Т-Банки и другие сервисы легли).</li>
+                <li><strong>18 августа 2026 года:</strong> Очередное падение интернета по вине Джона. В этот же день он разнес гараж Пасиона.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <span class="material-symbols-outlined">psychology</span>
+                <span>Личные наблюдения Лосяш тима</span>
+            </div>
+            <p>Джон в 18:18 намного опаснее чем в все остальное время. Пожалуйста: не выходите из лосяш тима в 18:18</p>
+        </div>
+    </main>
+
+    <footer>
+        ДевНет, ДевТелеком ©Девблоксия 2026-2026
+    </footer>
+
+</body>
+</html>

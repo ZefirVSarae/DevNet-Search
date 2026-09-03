@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevNet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #000000;
+      color: #FFFFFF;
+    }
+    .material-bg-gradient {
+      background: radial-gradient(circle at center, #1a0003 0%, #050001 70%, #000000 100%);
+    }
+    .search-pill {
+      background-color: #424242;
+      border-radius: 9999px;
+      transition: all 0.2s ease;
+    }
+    .search-pill:focus-within {
+      background-color: #525252;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+    }
+    .result-card {
+      background: transparent;
+      transition: all 0.2s ease;
+    }
+    .result-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #000000;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #ff0000;
+      border-radius: 4px;
+    }
+    #siteFrame {
+      background: #f0f0f0;
+    }
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.8);
+      color: #000;
+      font-size: 1.2rem;
+      z-index: 10;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .loading-overlay.hidden {
+      opacity: 0;
+    }
+  </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col material-bg-gradient selection:bg-red-900 selection:text-white">
+
+  <main class="flex-1 relative overflow-hidden flex flex-col items-center justify-center p-4">
+    
+    <!-- Домашняя страница -->
+    <section id="homeView" class="w-full max-w-md flex flex-col items-center text-center transition-all duration-300">
+      <div class="mb-10 flex flex-col items-center">
+        <h1 class="text-6xl md:text-7xl font-black tracking-tight text-red-600 mb-2 flex items-center gap-2">
+          DevNet
+          <span class="text-sm md:text-base font-normal text-red-400 opacity-70">alpha</span>
+        </h1>
+        <p class="text-red-600 text-xl font-bold tracking-wide">Поисковик ДевНета.</p>
+      </div>
+
+      <div class="w-full">
+        <form id="mainSearchForm" class="relative">
+          <div class="search-pill flex items-center px-6 py-3.5 shadow-2xl">
+            <input type="text" id="mainSearchInput" placeholder="Запрос или ссылка..." autocomplete="off" class="w-full bg-transparent text-white text-lg placeholder-gray-400 focus:outline-none font-medium">
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Страница результатов -->
+    <section id="resultsView" class="w-full h-full max-w-2xl flex flex-col hidden transition-all duration-300 pt-6 px-4">
+      <div class="pb-6">
+        <form id="headerSearchForm" class="relative">
+          <div class="search-pill flex items-center px-6 py-3 shadow-lg">
+            <input type="text" id="headerSearchInput" placeholder="Запрос или ссылка" autocomplete="off" class="w-full bg-transparent text-white text-lg placeholder-gray-400 focus:outline-none font-medium">
+          </div>
+        </form>
+      </div>
+
+      <div id="resultsList" class="flex-1 overflow-y-auto custom-scrollbar space-y-6 pt-2">
+      </div>
+    </section>
+
+    <!-- Страница просмотра сайта (iframe) -->
+    <section id="browserView" class="w-full h-full flex flex-col hidden transition-all duration-300 relative">
+      <div class="w-full px-4 py-2 bg-black border-b border-zinc-800 flex items-center gap-3">
+        <button id="closeBrowserBtn" class="p-1.5 rounded-full hover:bg-zinc-800 text-white transition">
+          <span class="material-icons-outlined text-xl">arrow_back</span>
+        </button>
+        <div class="flex-1 px-4 py-2 rounded-full bg-zinc-900 border border-zinc-800 text-sm font-mono text-red-500 flex items-center gap-2 overflow-hidden">
+          <span class="material-icons-outlined text-sm text-red-500">lock</span>
+          <span id="browserUrlDisplay" class="truncate">devnet://</span>
+        </div>
+      </div>
+      <div class="flex-1 w-full h-full bg-white relative">
+        <div id="loadingOverlay" class="loading-overlay hidden">
+          <span class="material-icons-outlined animate-spin mr-2">refresh</span> Загрузка...
+        </div>
+        <iframe id="siteFrame" class="w-full h-full border-0"></iframe>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // ---------- Глобальное состояние ----------
+    const loadedSites = {};
+    let sitesRegistry = [];
+    let isRegistryLoaded = false;
+
+    // DOM-элементы
+    const homeView = document.getElementById('homeView');
+    const resultsView = document.getElementById('resultsView');
+    const browserView = document.getElementById('browserView');
+    
+    const mainSearchForm = document.getElementById('mainSearchForm');
+    const mainSearchInput = document.getElementById('mainSearchInput');
+    const headerSearchForm = document.getElementById('headerSearchForm');
+    const headerSearchInput = document.getElementById('headerSearchInput');
+    
+    const resultsList = document.getElementById('resultsList');
+    const browserUrlDisplay = document.getElementById('browserUrlDisplay');
+    const siteFrame = document.getElementById('siteFrame');
+    const closeBrowserBtn = document.getElementById('closeBrowserBtn');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    // ---------- Вспомогательные функции ----------
+    function showView(view) {
+      homeView.classList.add('hidden');
+      resultsView.classList.add('hidden');
+      browserView.classList.add('hidden');
+      if (view === 'home') homeView.classList.remove('hidden');
+      if (view === 'results') resultsView.classList.remove('hidden');
+      if (view === 'browser') browserView.classList.remove('hidden');
+    }
+
+    function extractMetadata(html, devName) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const titleEl = doc.querySelector('title');
+      const title = titleEl && titleEl.textContent.trim() ? titleEl.textContent.trim() : devName;
+      const metaDesc = doc.querySelector('meta[name="description"]');
+      let description = metaDesc ? metaDesc.getAttribute('content') : '';
+      const bodyText = doc.body ? doc.body.textContent.replace(/\s+/g, ' ').trim() : '';
+      if (!description) {
+        description = bodyText ? bodyText.substring(0, 140) + '...' : devName;
+      }
+      return { title, description, fullText: bodyText, content: html };
+    }
+
+    function cleanQueryToDevName(q) {
+      let cleaned = q.trim();
+      cleaned = cleaned.replace(/^devnet:\/\//i, '');
+      if (cleaned.endsWith('.html')) {
+        cleaned = cleaned.slice(0, -5) + '.дев';
+      } else if (!cleaned.endsWith('.дев')) {
+        cleaned = cleaned + '.дев';
+      }
+      return cleaned;
+    }
+
+    function isDevLink(query) {
+      const trimmed = query.trim();
+      return trimmed.toLowerCase().startsWith('devnet://') || trimmed.endsWith('.дев');
+    }
+
+    // Генерация страницы 404
+    function get404HTML(devName) {
+      return `
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>404 - DevNet</title>
+<style>
+  body { margin:0; background: #1a0003; display:flex; align-items:center; justify-content:center; height:100vh; font-family: 'Roboto', sans-serif; color:#fff; text-align:center; }
+  .container { max-width:600px; padding:2rem; }
+  h1 { font-size:6rem; font-weight:900; color:#ff0000; margin:0; }
+  p { font-size:1.5rem; color:#aaa; }
+  .sub { font-size:1rem; color:#666; margin-top:1rem; }
+  a { color:#ff4444; text-decoration:none; }
+  a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>404</h1>
+  <p>Сайт <strong>${devName}</strong> не найден</p>
+  <div class="sub">Проверьте правильность ссылки или вернитесь на <a href="#" onclick="window.parent.closeBrowser(); return false;">главную</a></div>
+</div>
+</body>
+</html>`;
+    }
+
+    // Показать 404 в iframe
+    function show404(devName) {
+      browserUrlDisplay.textContent = `devnet://${devName}`;
+      const html = get404HTML(devName);
+      loadingOverlay.classList.add('hidden');
+      siteFrame.srcdoc = html;
+      showView('browser');
+    }
+
+    // Модификация HTML: добавляем <base> и перехватчик ссылок
+    function prepareHTML(html, baseUrl) {
+      let result = html;
+
+      // Добавляем <base> если передан baseUrl
+      if (baseUrl) {
+        // Ищем <head> или <html> для вставки
+        const baseTag = `<base href="${baseUrl}">`;
+        if (result.includes('<head>')) {
+          result = result.replace('<head>', `<head>${baseTag}`);
+        } else if (result.includes('<html>')) {
+          result = result.replace('<html>', `<html><head>${baseTag}</head>`);
+        } else {
+          // Если нет ни head, ни html, вставляем в начало
+          result = `<!DOCTYPE html><html><head>${baseTag}</head><body>${result}</body></html>`;
+        }
+      }
+
+      // Добавляем перехватчик ссылок
+      const interceptorScript = `
+<script>
+  document.addEventListener('click', function(e) {
+    const link = e.target.closest('a[href^="devnet://"]');
+    if (link) {
+      e.preventDefault();
+      window.parent.postMessage({ type: 'devnet-link', href: link.href }, '*');
+    }
+  });
+<\/script>
+`;
+      if (result.includes('</body>')) {
+        result = result.replace('</body>', interceptorScript + '</body>');
+      } else {
+        result = result + interceptorScript;
+      }
+
+      return result;
+    }
+
+    // ---------- Загрузка реестра ----------
+    async function loadSitesRegistry() {
+      try {
+        const response = await fetch('sites/sites.json');
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data)) {
+            sitesRegistry = data.map(item => ({
+              name: item.name || '',
+              path: item.path || '',
+              title: item.title || '',
+              description: item.description || ''
+            }));
+            console.log(`✅ Загружено ${sitesRegistry.length} сайтов из sites.json`);
+            return true;
+          }
+        }
+      } catch (e) {
+        console.warn('sites.json не найден, сканируем папку sites');
+      }
+      return false;
+    }
+
+    async function scanSitesDirectory() {
+      try {
+        const response = await fetch('sites/');
+        if (response.ok) {
+          const html = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const links = Array.from(doc.querySelectorAll('a'));
+          for (const link of links) {
+            const href = link.getAttribute('href');
+            if (href && href.endsWith('.html')) {
+              const baseName = href.split('/').pop().slice(0, -5);
+              const devName = baseName + '.дев';
+              if (!sitesRegistry.some(s => s.name === devName)) {
+                sitesRegistry.push({ name: devName, path: href, title: '', description: '' });
+              }
+            }
+          }
+          console.log(`🔍 Найдено ${sitesRegistry.length} сайтов сканированием`);
+          return true;
+        }
+      } catch (e) {
+        console.warn('Не удалось просканировать папку sites:', e);
+      }
+      return false;
+    }
+
+    // ---------- Загрузка содержимого сайта ----------
+    async function fetchSiteByDevName(devName) {
+      if (loadedSites[devName]) return loadedSites[devName];
+
+      let entry = sitesRegistry.find(s => s.name === devName);
+      let path = entry ? entry.path : null;
+
+      if (!path) {
+        const baseName = devName.slice(0, -4);
+        const candidates = [`sites/${baseName}.html`, `sites/${baseName}/index.html`];
+        for (const cand of candidates) {
+          try {
+            const resp = await fetch(cand);
+            if (resp.ok) { path = cand; break; }
+          } catch (e) {}
+        }
+      }
+
+      if (!path) {
+        console.warn(`Не найден путь для сайта ${devName}`);
+        return null;
+      }
+
+      try {
+        const response = await fetch(path);
+        if (!response.ok) return null;
+        const html = await response.text();
+        const site = extractMetadata(html, devName);
+        site.path = path;
+        // Вычисляем базовый URL для ассетов
+        if (path.endsWith('/index.html')) {
+          site.baseUrl = path.replace(/\/[^\/]*$/, '/');
+        } else {
+          site.baseUrl = path.replace(/[^\/]*$/, '');
+        }
+        loadedSites[devName] = site;
+        return site;
+      } catch (e) {
+        console.error(`Ошибка загрузки ${path}:`, e);
+        return null;
+      }
+    }
+
+    // ---------- Поиск и ранжирование ----------
+    function tokenize(text) {
+      return text.toLowerCase()
+        .replace(/[^\w\d\u0400-\u04FF\s]/g, ' ')
+        .split(/\s+/)
+        .filter(w => w.length > 0);
+    }
+
+    function getNGrams(word, n = 3) {
+      const grams = [];
+      const padded = ` ${word} `;
+      for (let i = 0; i <= padded.length - n; i++) {
+        grams.push(padded.slice(i, i + n));
+      }
+      return grams;
+    }
+
+    function fuzzyMatchScore(str1, str2) {
+      const g1 = getNGrams(str1.toLowerCase());
+      const g2 = getNGrams(str2.toLowerCase());
+      if (!g1.length || !g2.length) return 0;
+      let intersection = 0;
+      g1.forEach(gram => { if (g2.includes(gram)) intersection++; });
+      return (2 * intersection) / (g1.length + g2.length);
+    }
+
+    function calculateRelevanceScore(query, devName, site) {
+      const queryTokens = tokenize(query);
+      if (!queryTokens.length) return 0;
+
+      let score = 0;
+      const lowerQuery = query.toLowerCase().trim();
+      const lowerDevName = devName.toLowerCase();
+      const lowerTitle = site.title.toLowerCase();
+      const lowerDesc = site.description.toLowerCase();
+      const lowerFullText = site.fullText.toLowerCase();
+
+      if (lowerDevName === lowerQuery || lowerDevName === cleanQueryToDevName(lowerQuery)) score += 1000;
+      if (lowerTitle === lowerQuery) score += 500;
+      if (lowerTitle.includes(lowerQuery)) score += 200;
+      if (lowerDesc.includes(lowerQuery)) score += 100;
+      if (lowerFullText.includes(lowerQuery)) score += 50;
+
+      const titleTokens = tokenize(site.title);
+      const descTokens = tokenize(site.description);
+      const textTokens = tokenize(site.fullText);
+
+      queryTokens.forEach(qToken => {
+        if (lowerDevName.includes(qToken)) score += 80;
+        titleTokens.forEach(tToken => {
+          if (tToken === qToken) score += 60;
+          else if (tToken.includes(qToken) || qToken.includes(tToken)) score += 30;
+          else {
+            const fuzzy = fuzzyMatchScore(qToken, tToken);
+            if (fuzzy > 0.4) score += 15 * fuzzy;
+          }
+        });
+        descTokens.forEach(dToken => {
+          if (dToken === qToken) score += 40;
+          else if (dToken.includes(qToken) || qToken.includes(dToken)) score += 20;
+          else {
+            const fuzzy = fuzzyMatchScore(qToken, dToken);
+            if (fuzzy > 0.4) score += 10 * fuzzy;
+          }
+        });
+        let textOccurrences = 0;
+        textTokens.forEach(txtToken => {
+          if (txtToken === qToken || txtToken.includes(qToken)) textOccurrences++;
+        });
+        score += Math.min(textOccurrences * 5, 50);
+      });
+
+      return score;
+    }
+
+    // ---------- Основная функция поиска ----------
+    async function performSearch(query) {
+      const q = query.trim();
+      resultsList.innerHTML = '';
+
+      if (!isRegistryLoaded) {
+        await initRegistry();
+      }
+
+      if (isDevLink(q)) {
+        const devName = cleanQueryToDevName(q);
+        const site = await fetchSiteByDevName(devName);
+        if (site) {
+          openSite(devName);
+          return;
+        } else {
+          show404(devName);
+          return;
+        }
+      }
+
+      await Promise.all(sitesRegistry.map(entry => fetchSiteByDevName(entry.name)));
+
+      const scoredResults = [];
+      Object.keys(loadedSites).forEach(devName => {
+        const site = loadedSites[devName];
+        const score = calculateRelevanceScore(q, devName, site);
+        if (score > 0) {
+          scoredResults.push({ devName, site, score });
+        }
+      });
+
+      scoredResults.sort((a, b) => b.score - a.score);
+
+      if (scoredResults.length === 0) {
+        resultsList.innerHTML = `
+          <div class="py-8 text-zinc-500 text-lg">
+            Ничего не найдено
+          </div>
+        `;
+      } else {
+        scoredResults.forEach(({ devName, site }) => {
+          const card = document.createElement('div');
+          card.className = 'result-card cursor-pointer py-2 px-3 rounded-lg';
+          card.innerHTML = `
+            <div class="text-xs text-red-500 font-mono mb-1">devnet://${devName}</div>
+            <h2 class="text-2xl font-bold text-white mb-1">${site.title}</h2>
+            <p class="text-zinc-300 text-base font-normal">${site.description}</p>
+          `;
+          card.addEventListener('click', () => openSite(devName));
+          resultsList.appendChild(card);
+        });
+      }
+
+      showView('results');
+    }
+
+    // ---------- Открытие сайта в iframe с поддержкой ассетов ----------
+    function openSite(devName) {
+      const site = loadedSites[devName];
+      if (!site) {
+        show404(devName);
+        return;
+      }
+
+      browserUrlDisplay.textContent = `devnet://${devName}`;
+
+      // Подготавливаем HTML: добавляем base и перехватчик
+      const htmlWithBase = prepareHTML(site.content, site.baseUrl);
+
+      loadingOverlay.classList.remove('hidden');
+      siteFrame.srcdoc = htmlWithBase;
+      setTimeout(() => loadingOverlay.classList.add('hidden'), 300);
+
+      showView('browser');
+    }
+
+    // ---------- Обработчик сообщений от iframe (перехват ссылок) ----------
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'devnet-link') {
+        const href = event.data.href;
+        const devName = cleanQueryToDevName(href);
+        performSearch(`devnet://${devName}`);
+      }
+    });
+
+    // Функция для закрытия браузера (используется в 404)
+    window.closeBrowser = function() {
+      showView('results');
+    };
+
+    // ---------- Инициализация реестра ----------
+    async function initRegistry() {
+      if (isRegistryLoaded) return;
+      const hasJson = await loadSitesRegistry();
+      if (!hasJson) {
+        await scanSitesDirectory();
+      }
+      isRegistryLoaded = true;
+    }
+
+    // ---------- Обработчики событий ----------
+    mainSearchForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const val = mainSearchInput.value;
+      if (!val.trim()) return;
+      headerSearchInput.value = val;
+      await performSearch(val);
+    });
+
+    headerSearchForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const val = headerSearchInput.value;
+      if (!val.trim()) return;
+      await performSearch(val);
+    });
+
+    closeBrowserBtn.addEventListener('click', () => {
+      showView('results');
+    });
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await initRegistry();
+    });
+
+    siteFrame.addEventListener('load', () => {
+      loadingOverlay.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>
