@@ -115,6 +115,16 @@
             line-height: 1.5;
         }
 
+        /* ✨ Дополнительный стиль для выделения важного пункта */
+        .highlight {
+            background-color: rgba(208, 188, 255, 0.12);
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #fff;
+            border-left: 3px solid var(--md-sys-color-primary);
+        }
+
         .warning {
             border-left: 4px solid var(--md-sys-color-error);
             background-color: rgba(242, 184, 181, 0.05);
@@ -159,7 +169,7 @@
         <div class="card warning">
             <div class="card-title">
                 <span class="material-symbols-outlined">warning</span>
-                <span>Внимани</span>
+                <span>Внимание</span>
             </div>
             <p>Этот сайт был сделан не для джона. Пожалуйста не рассказывайте это джону чтоб он не сделал DDOS.</p>
         </div>
@@ -190,7 +200,10 @@
                 <li><strong>21 июля 2026 года:</strong> Попытка Джона обрушить Google в отместку за рейд на его базу (закончилась неудачей, Гугл выстоял).</li>
                 <li><strong>6 августа 2026 года:</strong> Масштабный пранк Джона — полное обрушение Рунета (Ozon, Wildberries, Яндексы, Т-Банки и другие сервисы легли).</li>
                 <li><strong>18 августа 2026 года:</strong> Очередное падение интернета по вине Джона. В этот же день он разнес гараж Пасиона.</li>
-                <li><strong>3 сентября 2026 года:</strong> Падение ии сервисов типа Gemini, GPT, Grok и остальных.</li>
+                <!-- 🔥 Исправленный пункт – теперь он точно виден и выделен -->
+                <li class="highlight">
+                    <strong>3 сентября 2026 года:</strong> 🔥 Падение ии сервисов типа Gemini, GPT, Grok и остальных.
+                </li>
             </ul>
         </div>
 
