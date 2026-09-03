@@ -16,14 +16,6 @@
     .material-gradient {
       background: radial-gradient(circle at top center, #1a0205 0%, #080203 60%, #030303 100%);
     }
-    .m3-surface {
-      background-color: #121212;
-      border: 1px solid #282828;
-    }
-    .m3-card {
-      background-color: #1c1b1f;
-      border-radius: 16px;
-    }
     .m3-input-container {
       background-color: #1e1e1e;
       border-radius: 28px;
@@ -133,6 +125,7 @@
   </main>
 
   <script>
+    const API_URL = "https://devai-code-97zanpxbk-zefirvsaraes-projects.vercel.app/api/chat";
     const MODEL_NAME = "OBLITERATUS/Qwen3.8-27B-OBLITERATED:featherless-ai";
 
     const DEV_KNOWLEDGE_BASE = `Ты — DevAI, дружелюбный, знающий и крутой ассистент по вселенной «Дев» (Dev / DevBloxia в Roblox). Ты общаешься естественно, увлекательно и уверенно, как друг. Выдавай сразу готовый ответ, никогда не пиши размышления и логику мыслей (тегов <thought> или текста думанья быть не должно).
@@ -165,7 +158,7 @@
 5. ЛОКАЦИИ, МЕХАНИКИ И ДВЕРИ:
 - Амбар 19 (Barn 19): Кладбище Лост-персонажей (погибших/удаленных). Бесконечные гаражи с миндальной водой.
 - Двери: Красная дверь (вход в Дев), Синяя дверь / Дверь 99 (в школу Балди), Дверь "Д" (в DrotaTri_poRusski Place 18), e19 (в Амбар 19 в 19:19).
-- Зоржа: Химикат/таблетки, вызывают смех, безумие и потерю памяти через 18 минут.
+- Зоржа: Химикат/таблетки, вызывают смех, безумие и потеря памяти через 18 минут.
 
 ФИНАЛ ЛОРА: Лосяш узнал правду от Глевила, объяснил всё персам, получил кристаллы и вместе с Лосяш Тимом и Балди покинул Дев.`;
 
@@ -245,7 +238,7 @@
       typingIndicator.classList.remove('hidden');
 
       try {
-        const response = await fetch("/api/chat", {
+        const response = await fetch(API_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
