@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Скролл</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+
+    <script type="importmap">
+      {
+        "imports": {
+          "@material/web/": "https://esm.run/@material/web/"
+        }
+      }
+    </script>
+    <script type="module">
+      import '@material/web/all.js';
+      import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
+      document.adoptedStyleSheets = [typescaleStyles.styleSheet];
+    </script>
+
+    <style>
+        :root {
+            --md-sys-color-background: #141218;
+            --md-sys-color-on-background: #e6e0e9;
+            --md-sys-color-surface: #1d1b20;
+            --md-sys-color-surface-container: #211f26;
+            --md-sys-color-surface-container-high: #2b2930;
+            --md-sys-color-on-surface: #e6e0e9;
+            --md-sys-color-on-surface-variant: #cac4d0;
+            --md-sys-color-primary: #d0bcff;
+            --md-sys-color-on-primary: #381e72;
+            --md-sys-color-primary-container: #4f378b;
+            --md-sys-color-on-primary-container: #eaddff;
+            --md-sys-color-outline: #938f99;
+            --md-sys-color-outline-variant: #49454f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-background);
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 0 16px 120px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .line-item {
+            height: 56px;
+            width: 100%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rich-banner {
+            height: 120px;
+            width: 100%;
+            margin: 12px 0;
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            border-radius: 28px;
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            text-align: center;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .rich-banner .material-symbols-outlined {
+            font-size: 3.5rem;
+        }
+
+        .counter-badge {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--md-sys-color-surface-container-high);
+            color: var(--md-sys-color-on-surface);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: 20px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            user-select: none;
+        }
+
+        .counter-icon {
+            color: var(--md-sys-color-primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .counter-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .counter-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--md-sys-color-on-surface-variant);
+            font-weight: 500;
+        }
+
+        .counter-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .sentinel {
+            height: 200px;
+            width: 100%;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 0 12px 100px 12px;
+            }
+            .counter-badge {
+                bottom: 16px;
+                padding: 10px 16px;
+            }
+            .rich-banner {
+                font-size: 1.8rem;
+                height: 90px;
+                border-radius: 20px;
+            }
+            .rich-banner .material-symbols-outlined {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="feed"></div>
+
+    <div id="sentinel" class="sentinel"></div>
+
+    <div class="counter-badge">
+        <div class="counter-icon">
+            <span class="material-symbols-outlined">payments</span>
+        </div>
+        <div class="counter-content">
+            <span class="counter-title">ТЫ БОГАТ!!</span>
+            <span class="counter-value" id="counter">0</span>
+        </div>
+    </div>
+
+    <script>
+        const feed = document.getElementById('feed');
+        const sentinel = document.getElementById('sentinel');
+        const counterElement = document.getElementById('counter');
+
+        let totalLines = 0;
+        const batchSize = 100;
+
+        function loadMoreLines() {
+            const fragment = document.createDocumentFragment();
+            for (let i = 0; i < batchSize; i++) {
+                totalLines++;
+                
+                if (totalLines > 0 && totalLines % 500 === 0) {
+                    const banner = document.createElement('div');
+                    banner.className = 'rich-banner';
+                    
+                    const iconLeft = document.createElement('span');
+                    iconLeft.className = 'material-symbols-outlined';
+                    iconLeft.textContent = 'payments';
+
+                    const text = document.createTextNode(' ТЫ БОГАТ!! ');
+
+                    const iconRight = document.createElement('span');
+                    iconRight.className = 'material-symbols-outlined';
+                    iconRight.textContent = 'payments';
+
+                    banner.appendChild(iconLeft);
+                    banner.appendChild(text);
+                    banner.appendChild(iconRight);
+
+                    fragment.appendChild(banner);
+                } else {
+                    const item = document.createElement('div');
+                    item.className = 'line-item';
+                    fragment.appendChild(item);
+                }
+            }
+            feed.appendChild(fragment);
+        }
+
+        function updateCounter() {
+            const scrollY = window.scrollY || window.pageYOffset;
+            const lineHeight = 56;
+            
+            let passedCount = Math.floor(scrollY / lineHeight);
+
+            if (passedCount < 0) passedCount = 0;
+            
+            counterElement.textContent = passedCount.toLocaleString();
+
+            if (scrollY + window.innerHeight * 2 >= document.body.offsetHeight) {
+                loadMoreLines();
+            }
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                loadMoreLines();
+            }
+        }, {
+            rootMargin: '1000px'
+        });
+
+        observer.observe(sentinel);
+
+        loadMoreLines();
+
+        window.addEventListener('scroll', updateCounter, { passive: true });
+        window.addEventListener('resize', updateCounter, { passive: true });
+        
+        updateCounter();
+    </script>
+</body>
+</html>
