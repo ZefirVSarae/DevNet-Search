@@ -18,5 +18,9 @@
   {
     "name": "DevWiki.дев",
     "path": "sites/DevWiki/index.html"
+  },
+  {
+    "name": "Scroll.дев",
+    "path": "sites/Scroll.html"
   }
 ]
