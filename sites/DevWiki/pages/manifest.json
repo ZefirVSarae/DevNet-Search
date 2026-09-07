@@ -3,25 +3,25 @@
     "id": "home",
     "title": "Заглавная",
     "icon": "home",
-    "keywords": "главная дев роблокс"
+    "keywords": "главная дев роблокс лор лагеря"
   },
   {
     "id": "loshyas",
     "title": "Лосяш Тим",
     "icon": "biotech",
-    "keywords": "команда ученые"
+    "keywords": "команда ученые исследователи гигглеры"
   },
   {
     "id": "pers-jijhi",
     "title": "Джихджи",
     "icon": "smart_toy",
-    "keywords": "перс атакер воид"
+    "keywords": "перс атакер воид омни"
   },
   {
     "id": "pers-devesto",
     "title": "Девесто",
     "icon": "build",
-    "keywords": "перс f3x тулбокс"
+    "keywords": "перс f3x тулбокс строитель ф3х куб"
   },
   {
     "id": "pers-guest1818",
@@ -39,7 +39,7 @@
     "id": "pers-bsd",
     "title": "Бсд Пассион",
     "icon": "person",
-    "keywords": "создатель зоржа"
+    "keywords": "создатель зоржа глава бсд"
   },
   {
     "id": "pers-karkarych",
@@ -81,7 +81,7 @@
     "id": "pers-johndev",
     "title": "Джон Дев",
     "icon": "hacking",
-    "keywords": "хакер уничтожитель"
+    "keywords": "хакер уничтожитель 1818 омни реролл спред зе лов"
   },
   {
     "id": "pers-astroblox",
@@ -111,7 +111,7 @@
     "id": "pers-yandexalice",
     "title": "Яндекс Алиса",
     "icon": "robot_2",
-    "keywords": "ии перс"
+    "keywords": "ии перс дефф шпион восстановление"
   },
   {
     "id": "pers-narrator",
@@ -129,7 +129,7 @@
     "id": "pers-spread",
     "title": "Спреад",
     "icon": "syringe",
-    "keywords": "перс зоржа"
+    "keywords": "перс зоржа культ only one"
   },
   {
     "id": "pers-badware",
@@ -321,7 +321,7 @@
     "id": "location-glaggland",
     "title": "Глаггланд",
     "icon": "island",
-    "keywords": "страна гигглеры энфосо"
+    "keywords": "страна гигглеры энфосо война"
   },
   {
     "id": "race-giggler",
@@ -339,7 +339,7 @@
     "id": "pers-mike",
     "title": "Майк",
     "icon": "wallpaper",
-    "keywords": "перс стенка"
+    "keywords": "перс стенка лагерь д энфосо"
   },
   {
     "id": "pers-ff",
@@ -351,7 +351,7 @@
     "id": "pers-pokoritel",
     "title": "Покоритель движух",
     "icon": "rocket_launch",
-    "keywords": "перс движуха"
+    "keywords": "перс движуха мёртв"
   },
   {
     "id": "pers-masterpizdevitya",
@@ -369,12 +369,42 @@
     "id": "pers-jrnzhir",
     "title": "Джрн жир",
     "icon": "body_fat",
-    "keywords": "перс толстый джон"
+    "keywords": "перс толстый джон лост"
   },
   {
     "id": "pers-maksutshahed",
     "title": "Максут Шахед",
     "icon": "gavel",
     "keywords": "перс депутат жир прислужник джон"
+  },
+  {
+    "id": "pers-guest666",
+    "title": "Гость 666",
+    "icon": "person",
+    "keywords": "хакер число 666 омни блок вирустотал"
+  },
+  {
+    "id": "item-singal",
+    "title": "Сингал (роутер)",
+    "icon": "wifi",
+    "keywords": "интернет сигнал tp-link 18de"
+  },
+  {
+    "id": "group-theonlyone",
+    "title": "THE 0NLY 0NE",
+    "icon": "psychology",
+    "keywords": "культ перерождение спреад глевил"
+  },
+  {
+    "id": "ability-omni",
+    "title": "OMNI",
+    "icon": "swords",
+    "keywords": "способность урон нож усиление"
+  },
+  {
+    "id": "ability-spreadthelove",
+    "title": "SPREAD THE LOVE!",
+    "icon": "favorite",
+    "keywords": "способность левитация зоржа сердце"
   }
 ]
